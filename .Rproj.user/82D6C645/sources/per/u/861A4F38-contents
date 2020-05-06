@@ -1,0 +1,66 @@
+df_1b <- gather(
+  filter(
+    select(
+      df,
+      -'Developed',
+      -'Developing', 
+      -'World', 
+      -'LDCs'
+    ),
+    Indicator == indicators[5] | Indicator == indicators[7]
+  ),
+  key = Country.Region,
+  value = Count.millions,
+  Africa, `Arab States`, `Asia & Pacific`, CIS, Europe, `The Americas`
+)
+
+# Comparison
+# line plots comparison
+ggplot(df_1b, aes(Year, Count.millions, fill = Country.Region, color = Country.Region)) +
+  geom_line() + facet_wrap(vars(Indicator))
+
+# bar chart comparison - ordered
+df_1b %>% 
+  arrange(Country.Region) %>% 
+  mutate(Count.millions = as.numeric(factor(Count.millions, levels = .$Count.millions))) %>%
+  ggplot(aes(Year, Count.millions, fill = Country.Region, color = Country.Region)) +
+  geom_bar(stat = "identity", position = "dodge") +
+  facet_grid(vars(Indicator))
+
+# Ranking
+# lollipop chart ranked
+df_1b %>% 
+  arrange(`Country.Region`) %>% 
+  mutate(Count.millions = factor(Count.millions, levels = unique(.$Count.millions))) %>%
+  ggplot(aes(Country.Region, as.numeric(Count.millions), fill = Country.Region)) +
+  geom_point(size = 3, color = "red") +
+  geom_segment(aes(x = Country.Region, xend = Country.Region, y = 0, yend = as.numeric(Count.millions))) +
+  facet_grid(rows = vars(Indicator), cols = vars(Year)) + 
+  coord_flip()
+
+# Part-of-whole
+# stacked bar chart
+df_1b %>% 
+  arrange(Country.Region) %>% 
+  mutate(Count.millions = factor(Count.millions, levels = .$Count.millions)) %>%
+  ggplot(aes(Year, as.numeric(Count.millions), fill = factor(Country.Region))) +
+  geom_bar(stat = "identity", position = "stack") + 
+  facet_grid(vars(Indicator))
+
+# stacked prop
+df_1b %>% 
+  arrange(Country.Region) %>% 
+  mutate(Count.millions = factor(Count.millions, levels = .$Count.millions)) %>%
+  ggplot(aes(Year, as.numeric(Count.millions), fill = Country.Region)) + 
+  geom_area(stat = "identity", position = "fill") +
+  facet_grid(vars(Indicator))
+
+# pie-chart
+df_1b %>% 
+  arrange(Country.Region) %>% 
+  mutate(Count.millions = factor(Count.millions, levels = .$Count.millions)) %>%
+  ggplot(aes(x = "", y = as.numeric(Count.millions), fill = Country.Region)) + 
+  geom_bar(stat = "identity", position = "fill") +
+  theme(axis.line = element_blank()) +
+  coord_polar(theta = "y", start = 0) + 
+  facet_grid(vars(Indicator))  

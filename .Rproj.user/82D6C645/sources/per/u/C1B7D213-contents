@@ -1,0 +1,6 @@
+library(tidyverse)
+mpg
+ggplot(mpg) + geom_bar(aes(x = class))
+mpg$class %>% unique()
+ggplot(mpg) + geom_bar(aes(x = class, fill = drv))
+View(mpg)

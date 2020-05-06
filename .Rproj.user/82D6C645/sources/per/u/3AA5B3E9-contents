@@ -1,0 +1,471 @@
+#df_gathered <- gather(
+#  data = filter(df, Indicator == "Fixed-telephone subscriptions (millions)" | Indicator == "Mobile-cellular telephone subscriptions (millions)"),
+#  key = Country.Region,
+#  value = Count.millions,
+#  Developed, Developing, World, LDCs, Africa, `Arab States`, `Asia & Pacific`, CIS, Europe, `The Americas`
+#)
+#View(df_gathered)
+
+
+View(df)
+
+df %>% mutate(Year = as.Date(Year, "%Y"))
+
+as.Date(df$Year, "%Y")
+
+dim(df)
+
+df %>% mutate(Year = year(strptime(Year, "%Y")))
+
+
+df$date <- as.Date(df$modeldate, "%m/%d/%Y")
+
+mutate(Country = factor(Country, levels = .$Country)) %>%
+  
+data %>% mutate(Country = factor(Country, levels = .$Country))
+
+
+
+as.Date(df$Year, "%Y")
+
+library(lubridate)
+
+ymd(df$Year)
+year(as.Date(df$Year))
+
+as.Date(df$Year)
+
+
+
+
+filter(df, Year > 2014)
+
+
+library(ggplot2)
+Animals <- read.table(
+  header=TRUE, text='Category        Reason Species
+1   Decline       Genuine      24
+2  Improved       Genuine      16
+3  Improved Misclassified      85
+4   Decline Misclassified      41
+5   Decline     Taxonomic       2
+6  Improved     Taxonomic       7
+7   Decline       Unclear      41
+8  Improved       Unclear     117')
+
+Animals
+
+ggplot(Animals, aes(factor(Reason), Species, fill = Category)) + 
+  geom_bar(stat="identity", position = "dodge") + 
+  scale_fill_brewer(palette = "Set1")
+
+?factor
+
+df$Indicator %>% unique()
+
+filter(df, grepl('Fixed-telephone subscriptions (millions)', Indicator))
+
+filter(df, Indicator %like% 'telephone subscriptions (millions)')
+
+filter(df, grepl("telephone subscriptions (millions)", Indicator))
+
+gather(
+  data = filter(df, Indicator == "Fixed-telephone subscriptions (millions)" | Indicator == "Mobile-cellular telephone subscriptions (millions)"),
+  key = Country.Region,
+  value = Count.millions,
+  Developed, Developing, World, LDCs, Africa, `Arab States`, `Asia & Pacific`, CIS, Europe, `The Americas`
+)
+
+
+?gather()
+
+as.numeric(select(df, -1, -2))
+
+?as.numeric
+
+for (i in 3:length(colnames(df))){
+  df[,i] <- as.numeric(df[,i])
+}
+
+df[,3]
+
+
+ggplot(
+  data = gather(
+    data = filter(df, Indicator == "Fixed-telephone subscriptions (millions)" | Indicator == "Mobile-cellular telephone subscriptions (millions)"),
+    key = Country.Region,
+    value = Count.millions,
+    Developed, Developing, World, LDCs, Africa, `Arab States`, `Asia & Pacific`, CIS, Europe, `The Americas`
+  ),
+  aes(
+    x = Year,
+    y = Count.millions,
+    fill = Country.Region
+  )
+) + 
+  geom_bar()
+
+?select
+
+colnames(df)
+
+select(df, -Africa)
+
+iris <- as_tibble(iris) # so it prints a little nicer
+
+View(iris)
+
+select(iris, -Sepal.Length)
+
+select(df, -'Africa', -`Arab States`, -`Asia & Pacific`, -'CIS', -'Europe', -`The Americas`) %>% head()
+
+select(
+  df,
+  -`Africa`, -`Arab States`, -`Asia & Pacific`, -'CIS', -'Europe', -`The Americas`
+) %>% head()
+
+
+?geom_bar
+
+
+
+mutate(
+  gather(
+    data = filter(
+      select(
+        df,
+        -'Africa',
+        -`Arab States`, 
+        -`Asia & Pacific`, 
+        -'CIS', 
+        -'Europe', 
+        -`The Americas`
+      ),
+      Indicator == "Fixed-telephone subscriptions (millions)" | Indicator == "Mobile-cellular telephone subscriptions (millions)"
+    ),
+    key = Country.Region,
+    value = Count.millions,
+    Developed, Developing, World, LDCs
+  ),
+  Year = as.character(Year)
+) %>% head()
+
+
+
+ggplot(
+  data = 
+    gather(
+      data = filter(
+        select(
+          df,
+          -'Africa',
+          -`Arab States`, 
+          -`Asia & Pacific`, 
+          -'CIS', 
+          -'Europe', 
+          -`The Americas`
+        ),
+        Indicator == "Fixed-telephone subscriptions (millions)" | Indicator == "Mobile-cellular telephone subscriptions (millions)"
+      ),
+      key = Country.Region,
+      value = Count.millions,
+      Developed, Developing, World, LDCs
+    ),
+  aes(
+    x = Year,
+    y = Count.millions,
+    fill = Country.Region
+  )
+) + 
+  geom_line()
+  
+  geom_bar(stat = "identity", position = "dodge")
+  
+filter(df, Indicator == "Fixed-telephone subscriptions (millions)" | Indicator == "Mobile-cellular telephone subscriptions (millions)")
+
+filter(df, grepl("telephone subscriptions (millions)", Indicator))
+
+?grepl
+
+
+filter(
+  select(
+    df,
+    -'Developed',
+    -'Developing', 
+    -'World', 
+    -'LDCs'
+  ),
+  Indicator == "Fixed-telephone subscriptions (millions)" | Indicator == "Mobile-cellular telephone subscriptions (millions)"
+)
+
+
+#df_gathered <- gather(
+#  data = filter(df, Indicator == "Fixed-telephone subscriptions (millions)" | Indicator == "Mobile-cellular telephone subscriptions (millions)"),
+#  key = Country.Region,
+#  value = Count.millions,
+#  Developed, Developing, World, LDCs, Africa, `Arab States`, `Asia & Pacific`, CIS, Europe, `The Americas`
+#)
+
+
+ggplot(filter(df_gathered, Country.Region == 'Africa' & Indicator == 'Fixed-telephone subscriptions (millions)'),
+       aes(x = Year, y = Count.millions)) + geom_line()
+
+
+ggplot(
+  data = 
+    gather(
+      filter(
+        select(
+          df,
+          -'Developed',
+          -'Developing', 
+          -'World', 
+          -'LDCs'
+        ),
+        Indicator == "Fixed-telephone subscriptions (millions)" | Indicator == "Mobile-cellular telephone subscriptions (millions)"
+      ),
+      key = Country.Region,
+      value = Count.millions,
+      Africa, `Arab States`, `Asia & Pacific`, CIS, Europe, `The Americas`
+    ),
+  aes(
+    x = Year,
+    fill = Country.Region
+  )
+) + geom_line(
+  aes(
+    y = filter(df_gathered, Country.Region == 'Africa' & Indicator == 'Fixed-telephone subscriptions (millions)')$Count.millions
+  )
+)
+
+
+gather(
+  filter(
+    select(
+      df,
+      -'Developed',
+      -'Developing', 
+      -'World', 
+      -'LDCs'
+    ),
+    Indicator == "Fixed-telephone subscriptions (millions)" | Indicator == "Mobile-cellular telephone subscriptions (millions)"
+  ),
+  key = Country.Region,
+  value = Count.millions,
+  Africa, `Arab States`, `Asia & Pacific`, CIS, Europe, `The Americas`
+) %>%
+  mutate(
+    Country.Region = factor(Country.Region, levels = .$Country.Region)
+  ) %>%
+  ggplot(
+    aes(
+      Year,
+      Count.millions,
+      fill = County.Region
+    )
+  ) + geom_bar(stat = "identity", position = "dodge")
+
+mutate(Country = factor(Country, levels = .$Country))
+
+
+ggplot(
+  aes(
+    x = Year,
+    y = Count.millions,
+    fill = Country.Region
+  )
+) + 
+  geom_bar(stat = "identity", position = "dodge")
+
+View(df_1)
+
+indicators <- df$Indicator %>% unique()
+
+Fixed- and mobile-broadband subscriptions
+
+
+df_t <- gather(
+  filter(
+    select(
+      df,
+      -'Developed',
+      -'Developing', 
+      -'World', 
+      -'LDCs'
+    ),
+    Indicator == indicators[1] | Indicator == indicators[3]
+  ),
+  key = Country.Region,
+  value = Count.millions,
+  Africa, `Arab States`, `Asia & Pacific`, CIS, Europe, `The Americas`
+)
+
+View(df_t)
+
+
+
+df_1a %>% 
+  arrange(Count.millions) %>% 
+  mutate(Indicator = factor(Indicator, levels = unique(.$Indicator))) %>%
+  mutate(Country.Region = factor(Country.Region, levels = unique(.$Country.Region))) %>%
+  ggplot(aes(Year, Count.millions, fill = Country.Region, color = Country.Region)) +
+  geom_bar(stat = "identity", position = "dodge") +
+  facet_grid(vars(Indicator))
+
+df_1a %>% 
+  arrange(Count.millions) %>% 
+  mutate(Indicator = factor(Indicator, levels = unique(.$Indicator))) %>%
+  mutate(Country.Region = factor(Country.Region, levels = unique(.$Country.Region))) %>%
+  ggplot(aes(Year, Count.millions, fill = Country.Region, color = Country.Region)) +
+  geom_bar(stat = "identity", position = "dodge") +
+  facet_grid(vars(Indicator))
+
+
+df_1a %>% 
+  arrange(Country.Region) %>% 
+  mutate(Count.millions = factor(Count.millions, levels = .$Count.millions)) %>%
+  filter(Indicator == indicators[3]) %>%
+  ggplot(aes(Year, as.numeric(Count.millions), fill = Country.Region, color = Country.Region)) +
+  geom_bar(stat = "identity", position = "dodge") +
+  facet_grid(vars(Indicator))
+
+
+df_1a %>% 
+  arrange(`Country.Region`) %>% 
+  mutate(Count.millions = factor(Count.millions, levels = unique(.$Count.millions))) %>%
+  ggplot(aes(Country.Region, as.numeric(Count.millions), fill = Country.Region)) +
+  geom_point(size = 3, color = "red") +
+  geom_segment(aes(x = Country.Region, xend = Country.Region, y = 0, yend = as.numeric(Count.millions))) +
+  facet_grid(rows = vars(Indicator), cols = vars(Year)) + 
+  coord_flip()
+
+
+df_1a %>% 
+  arrange(Country.Region) %>% 
+  mutate(Count.millions = factor(Count.millions, levels = .$Count.millions)) %>%
+  ggplot(aes(Year)) +
+  geom_bar(aes(y = as.numeric(Count.millions), fill = factor(Indicator)), stat = "identity", position = "stack")
+  
+  #facet_grid(vars(Indicator))
+  
+
+df_1a %>% 
+  arrange(Country.Region) %>% 
+  mutate(Count.millions = factor(Count.millions, levels = .$Count.millions)) %>%
+  ggplot(aes(Year, as.numeric(Count.millions), color = factor(Country.Region))) +
+  #geom_bar(stat = "identity", position = "stack") +
+  geom_line()
+  facet_grid(vars(Indicator))
+
+
+  df_1a %>% 
+    arrange(Country.Region) %>% 
+    mutate(Count.millions = factor(Count.millions, levels = .$Count.millions)) %>%
+    ggplot(aes(Year, as.numeric(Count.millions), fill = Country.Region)) + 
+    geom_area(stat = "identity", position = "fill") +
+    facet_grid(vars(Indicator))
+
+  
+  
+ggplot(filter(filter(df, !TAX %in% "TOTALTAX"), GOV == "NES"), aes(x = obsTime, y = obsValue, fill = TAX))
++ geom_area() + labs(title = "US Tax Revenue - NES")
+
+indicators[2]
+
+# Fixed- and mobile-telephone subscriptions
+# Fixed- and mobile-broadband subscriptions
+# Population covered by mobile-cellular and mobile-broadband network
+# International bandwidth usage
+# Households with a computer and with Internet access
+# Individuals using the Internet
+
+#Active mobile-broadband subscriptions (millions)"                                
+# [6] "Active mobile-broadband subscriptions (Per 100 inhabitants)"                     
+# [7] "Fixed-broadband subscriptions (millions)"  
+ 
+filter(df, Indicator == indicators[22])
+
+
+base <- ggplot(df_1a, aes(Year, Count.millions, fill = Country.Region, color = Country.Region))
+base + geom_bar(stat = "identity", position = "dodge") + facet_grid(vars(Indicator))
+
+
+df_1a %>% 
+  arrange(`Count.millions`) %>% 
+  mutate(Country.Region = factor(Country.Region, levels = unique(.$Country.Region))) %>%
+  ggplot(aes(Year, Count.millions, fill = Country.Region, color = Country.Region)) +
+  geom_bar(stat = "identity", position = "dodge") +
+  facet_grid(vars(Indicator))
+
+
+
+ggplot(data, aes(x = "", y=count, fill = class)) + 
+  geom_bar(stat = "identity", color="white") +
+  theme(axis.line = element_blank(), 
+        plot.title = element_text(hjust=0.5),
+        axis.ticks = element_blank(),
+        axis.text = element_blank()) + 
+  labs(x=NULL, 
+       y=NULL, 
+       title="Pie Chart of Car class", 
+       caption="Source: mpg") +
+  geom_text(aes(label = paste(round(count / sum(count) * 100, 0),"%"),x=1.35),
+            position = position_stack(vjust = 0.5), color="white")+
+  coord_polar(theta = "y", start=0) 
+
+df_1a %>% 
+  arrange(Country.Region) %>% 
+  mutate(Count.millions = factor(Count.millions, levels = .$Count.millions)) %>%
+  ggplot(aes(x = "", y = as.numeric(Count.millions), fill = Country.Region)) +
+  geom_bar(stat = "identity", color = "white") + 
+  theme(axis.line = element_blank(),
+        plot.title = element_text(hjust = 0.5),
+        axis.ticks = element_blank(),
+        axis.text = element_blank()) +
+  coord_polar(theta = "y", start = 0) +
+  facet_grid(vars(Indicator))
+  
+
+df_1a %>% 
+  arrange(Country.Region) %>% 
+  mutate(Count.millions = factor(Count.millions, levels = .$Count.millions)) %>%
+  ggplot(aes(x = "", y = Count.millions, fill = Country.Region)) + 
+  geom_bar(stat = "identity", color = "white") +
+  theme(axis.line = element_blank()) +
+  coord_polar(theta = "y", start = 0)
+  
+df_1a %>% 
+  arrange(Country.Region) %>% 
+  mutate(Count.millions = factor(Count.millions, levels = .$Count.millions)) %>%
+  ggplot(aes(x = "", y = as.numeric(Count.millions), fill = Country.Region)) + 
+  geom_bar(stat = "identity") +
+  theme(axis.line = element_blank()) +
+  coord_polar(theta = "y", start = 0) + 
+  facet_grid(vars(Indicator))
+
+df_1a %>% 
+  arrange(Country.Region) %>% 
+  mutate(Count.millions = factor(Count.millions, levels = .$Count.millions)) %>%
+  ggplot(aes(x = "", y = as.numeric(Count.millions), fill = Country.Region)) + 
+  geom_bar(stat = "identity", position = "fill") +
+  theme(axis.line = element_blank()) +
+  coord_polar(theta = "y", start = 0) + 
+  facet_grid(vars(Indicator))  
+
+df_1b %>% 
+  arrange(Country.Region) %>% 
+  mutate(Count.millions = factor(Count.millions, levels = .$Count.millions)) %>%
+  ggplot(aes(Year, as.numeric(Count.millions), fill = Country.Region)) + 
+  geom_area(stat = "identity", position = "fill") +
+  coord_polar(theta = "y", start = 0) + 
+  facet_grid(vars(Indicator))
+  
+  ggplot(aes(x = "", y = as.numeric(Count.millions), fill = Country.Region)) +
+  geom_bar(stat = "identity", color = "white") + 
+  theme(axis.line = element_blank(),
+        plot.title = element_text(hjust = 0.5),
+        axis.ticks = element_blank(),
+        axis.text = element_blank()) +
+  coord_polar(theta = "y", start = 0) +
+  facet_grid(vars(Indicator))
